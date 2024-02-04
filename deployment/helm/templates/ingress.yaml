@@ -1,0 +1,22 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "auth-bff.fullname" . }}-ingress
+  annotations:
+    cert-manager.io/cluster-issuer: lets-encrypt
+spec:
+  tls:
+  - hosts:
+    - {{ include "auth-bff.fullname" . }}.api.dev.dev-league.com
+    secretName: {{ include "auth-bff.fullname" . }}-ingress-tls
+  rules:
+  - host: {{ include "auth-bff.fullname" . }}.api.dev.dev-league.com
+    http:
+      paths:
+      - backend:
+          service:
+            name: {{ include "auth-bff.fullname" . }}
+            port:
+              number: {{ .Values.service.port }}
+        path: /
+        pathType: Prefix
