@@ -1,20 +1,21 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
+import { SignUpDTO } from '../auth/dto/sign-up.dto';
+import { UserEntityDTO } from './dto/user-entity.dto';
 
 @Injectable()
 export class UserIntegration {
   constructor(private readonly httpService: HttpService) {}
 
-  async getUserById(userId: string) {
-    return `This action returns a #${userId} user`;
+  async getUserById(userId: string): Promise<UserEntityDTO> {
+    return await this.httpService.axiosRef.get(`${userId}`);
   }
 
-  async getUserByEmail(email: string) {
-    const response = await this.httpService.axiosRef.get(`find?email=${email}`);
-    return response.data;
+  async getUserByEmail(email: string): Promise<UserEntityDTO> {
+    return await this.httpService.axiosRef.get(`find?email=${email}`);
   }
 
-  async createUser() {
-    return `This action creates a new user`;
+  async createUser(userDto: Partial<SignUpDTO>): Promise<UserEntityDTO> {
+    return await this.httpService.axiosRef.post('', userDto);
   }
 }
